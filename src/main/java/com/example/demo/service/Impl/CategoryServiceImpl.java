@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (rs== null) {
             throw new NotFoundException("Category không tồn tại");
         }
-        System.out.println("=============== check giá trị count của category=============: ");
+        System.out.println("=============== Đang ở trong delete category++++++++++: ");
         // Check product in category
         int count = categoryRepository.checkProductInCategory(id);
         System.out.println("=============== Giá trị count: " + count);
