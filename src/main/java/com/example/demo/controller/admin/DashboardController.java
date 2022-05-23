@@ -2,10 +2,9 @@ package com.example.demo.controller.admin;
 
 
 import com.example.demo.model.dto.ChartDto;
-import com.example.demo.repository.BrandRepository;
-import com.example.demo.repository.CategoryRepository;
-import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.model.dto.StatisticDTO;
+import com.example.demo.model.request.FilterDayByDay;
+import com.example.demo.repository.*;
 import com.example.demo.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 import java.util.List;
@@ -48,6 +49,9 @@ public class DashboardController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private StatisticRepository statisticRepository;
 
 
     @GetMapping("/admin")
@@ -114,5 +118,17 @@ public class DashboardController {
         List<ChartDto> chartDTOS = productRepository.getProductOrders_test(pageable, date.getMonth()+1, date.getYear() + 1900);
 
         return ResponseEntity.ok(chartDTOS);
+    }
+
+    @GetMapping("/api/admin/statistics")
+    public ResponseEntity<Object>  getStatistic30Day(){
+        List<StatisticDTO> statistics = statisticRepository.getStatistic30Day();
+        return ResponseEntity.ok(statistics);
+    }
+
+    @PostMapping("/api/admin/statistics")
+    public ResponseEntity<Object> getStatisticDayByDay(@RequestBody FilterDayByDay filterDayByDay){
+        List<StatisticDTO> statisticDTOS = statisticRepository.getStatisticDayByDay(filterDayByDay.getToDate(),filterDayByDay.getFromDate());
+        return ResponseEntity.ok(statisticDTOS);
     }
 }

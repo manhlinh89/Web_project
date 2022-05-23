@@ -9,10 +9,7 @@ import com.example.demo.model.dto.OrderInfoDto;
 import com.example.demo.model.request.CreateOrderReq;
 import com.example.demo.model.request.UpdateDetailOrderReq;
 import com.example.demo.model.request.UpdateStatusOrderReq;
-import com.example.demo.repository.FinanceRepository;
-import com.example.demo.repository.OrderRepository;
-import com.example.demo.repository.ProductRepository;
-import com.example.demo.repository.ProductSizeRepository;
+import com.example.demo.repository.*;
 import com.example.demo.service.OrderService;
 import com.example.demo.service.PromotionService;
 import org.aspectj.weaver.ast.Or;
@@ -44,6 +41,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private FinanceRepository financeRepository;
+    @Autowired
+    private StatisticRepository statisticRepository;
 
     @Override
     public Order createOrder(CreateOrderReq req, long userId) {
@@ -297,6 +296,8 @@ public class OrderServiceImpl implements OrderService {
                 productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
                 productRepository.plusOneProductTotalSold(order.getProduct().getId());
                 updateRevenue(modifiedBy, order.getTotalPrice(), order);
+                System.out.println("===================1=================");
+                System.out.println(order.getTotalPrice());
             } else if (req.getStatus() != CANCELED_STATUS) {
                 throw new BadRequestException("Không thể chuyển đơn hàng sang trạng thái này");
             }
@@ -305,6 +306,8 @@ public class OrderServiceImpl implements OrderService {
             if (req.getStatus() == COMPLETE_STATUS) {
                 // TODO: Plus money
                 productRepository.plusOneProductTotalSold(order.getProduct().getId());
+                System.out.println("===================2=================");
+                System.out.println(order.getTotalPrice());
                 updateRevenue(modifiedBy, order.getTotalPrice(), order);
             } else if (req.getStatus() == RETURNED_STATUS) {
                 // TODO: Plus 1 product
@@ -321,6 +324,8 @@ public class OrderServiceImpl implements OrderService {
                 productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
                 productRepository.minusOneProductTotalSold(order.getProduct().getId());
                 updateRevenue(modifiedBy, -order.getTotalPrice(), order);
+                System.out.println("===================3=================");
+                System.out.println(order.getTotalPrice());
             } else if (req.getStatus() != COMPLETE_STATUS) {
                 throw new BadRequestException("Không thể chuyển đơn hàng sang trạng thái này");
             }
@@ -357,4 +362,5 @@ public class OrderServiceImpl implements OrderService {
 
         financeRepository.save(finance);
     }
+
 }

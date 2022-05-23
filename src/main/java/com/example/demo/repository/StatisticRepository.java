@@ -4,9 +4,11 @@ import com.example.demo.entity.Statistic;
 import com.example.demo.model.dto.StatisticDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface StatisticRepository extends JpaRepository<Statistic, Long> {
     @Query(name = "getStatistic30Day",nativeQuery = true)
     List<StatisticDTO> getStatistic30Day();
