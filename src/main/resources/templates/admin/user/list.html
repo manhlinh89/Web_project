@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách tài khoản</title>
+    <th:block id="css-resources">
+        <link rel="stylesheet" type="text/css" th:href="@{/vendor/pagination/simplePagination.css}"/>
+    </th:block>
+</head>
+<body>
+<main id="main-content">
+    <!-- Breadcrumb -->
+    <div class="row">
+        <div class="col-12">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item active">Danh sách tài khoản</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <a role="button" class="btn btn-success" href="/admin/users/create">
+            <span class="fa fa-plus" style="margin-right:0.5rem;"></span>
+            <span>Thêm mới tài khoản</span>
+        </a>
+        <a role="button" class="btn btn-info" href="/admin/users">
+            <span class="fas fa-redo-alt" style="margin-right:0.5rem;"></span>
+            <span>Refresh</span>
+        </a>
+        <button class="btn btn-secondary" id="btn-search">
+            <span class="fas fa-search" style="margin-right:0.5rem;"></span>
+            <span>Tìm kiếm</span>
+        </button>
+        <div class="clear"></div>
+    </div>
+    <table class="table table-bordered table-striped mb-0" id="datatable-editable">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Tên</th>
+            <th>Email</th>
+            <th>Số điện thoại</th>
+            <th>Địa chỉ</th>
+            <th>Ngày tạo</th>
+            <!--                    <th>Thao tác</th>-->
+        </tr>
+        <tr>
+            <form method="GET" id="search-form">
+                <th></th>
+                <th><input type="text" name="fullName" id="fullName" class="form-control search-input"></th>
+                <th><input type="text" name="email" id="email" class="form-control search-input"></th>
+                <th><input type="text" name="phone" id="phone" class="form-control search-input"></th>
+                <th></th>
+                <th></th>
+                <!--                        <th></th>-->
+                <input type="hidden" name="page" id="page">
+            </form>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="user : ${users}">
+            <tr data-item-id="1">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.fullName}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.phone}"></td>
+                <td th:text="${user.address}"></td>
+                <td th:text="${#dates.format(user.createdAt, 'dd-MM-yyyy')}"></td>
+                <!--                    <td class="actions">-->
+                <!--                        <a href="#" class="hidden on-editing save-row"><i class="fas fa-save"></i></a>-->
+                <!--                        <a href="#" class="hidden on-editing cancel-row"><i-->
+                <!--                                class="fas fa-times"></i></a>-->
+                <!--                        <a href="#" class="on-default edit-row"><i class="fas fa-pencil-alt"></i></a>-->
+                <!--                        <a href="#" class="on-default remove-row"><i class="far fa-trash-alt"></i></a>-->
+                <!--                    </td>-->
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <br>
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination" id="pagination"></ul>
+    </nav>
+
+</main>
+<th:block id="js-resources">
+    <script type="text/javascript" th:src="@{/vendor/pagination/jquery.simplePagination.js}"></script>
+    <script type="text/javascript" th:src="@{/adminlte/dist/js/table.js}"></script>
+    <script th:inline="javascript">
+        let fullName, email, phone, address, page;
+
+        $(function () {
+            let vars = parseUrl();
+            fullName = vars["fullName"] || ""
+            email = vars["email"] || ""
+            phone = vars["phone"] || ""
+            address = vars["address"] || ""
+            page = vars["page"] || "1"
+
+            $('#fullName').val(fullName)
+            $('#email').val(email)
+            $('#phone').val(phone)
+            $('#address').val(address)
+            $('#page').val(page)
+
+            pagination([[${totalPages}]], [[${currentPage}]]);
+        });
+    </script>
+</th:block>
+</body>
+</html>

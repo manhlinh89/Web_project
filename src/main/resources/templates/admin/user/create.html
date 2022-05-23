@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{/layout/layout_admin :: main-fragment(
+                                                ~{:: title},
+                                                ~{:: #css-resources},
+                                                ~{:: #js-resources},
+                                                ~{:: #main-content}
+                                               )}">
+<head>
+    <title>Thêm user mới</title>
+    <th:block id="css-resources">
+        <!-- summernote -->
+        <link rel="stylesheet" th:href="@{/adminlte/plugins/summernote/summernote-bs4.css}">
+        <link rel="stylesheet" th:href="@{/adminlte/dist/css/modal_img.css}">
+    </th:block>
+</head>
+<body>
+<main id="main-content">
+    <!-- Breadcrumb -->
+    <div class="row">
+        <div class="col-12">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/users">Danh sách tài khoản</a></li>
+                <li class="breadcrumb-item active">Thêm tài khoản mới</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <a role="button" class="btn btn-default" href="/admin/users">
+            <span class="fas fa-chevron-left" style="margin-right:0.5rem;"></span>
+            <span>Trở về</span>
+        </a>
+        <button class="btn btn-success btn-create-user">
+            <span class="fa fa-plus" style="margin-right:0.5rem;"></span>
+            <span>Thêm tài khoản</span>
+        </button>
+        <div class="clear"></div>
+    </div>
+    <!-- ==========================================Main content =======================================-->
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-outline">
+                <div class="card-body pad">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-8">
+                            <form>
+
+                                <input class="form-control sign-up-full-name" placeholder="Họ và tên *"
+                                       autocomplete="autocomplete"/>
+                                <div class="invalid-feedback"></div>
+                                <br>
+                                <input class="form-control sign-up-phone" placeholder="Số điện thoại *"
+                                       autocomplete="autocomplete"/>
+                                <div class="invalid-feedback"></div>
+                                <br>
+                                <input class="form-control sign-up-email" placeholder="Email *"
+                                       autocomplete="autocomplete"/>
+                                <div class="invalid-feedback"></div>
+                                <br>
+                                <input class="form-control sign-up-password" type="password" placeholder="Mật khẩu *"
+                                       autocomplete="autocomplete"/>
+                                <div class="invalid-feedback"></div>
+                                <br>
+                                <input class="form-control sign-up-confirm-password" type="password"
+                                       placeholder="Xác nhận mật khẩu *" autocomplete="autocomplete"/>
+                                <div class="invalid-feedback"></div>
+                                <div class="privacy-confirm"></div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
