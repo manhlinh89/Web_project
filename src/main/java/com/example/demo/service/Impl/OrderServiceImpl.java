@@ -295,7 +295,8 @@ public class OrderServiceImpl implements OrderService {
                 // TODO: Minus 1 product, Plus money
                 productSizeRepository.minusOneProductBySize(order.getProduct().getId(), order.getSize());
                 productRepository.plusOneProductTotalSold(order.getProduct().getId());
-                updateRevenue(modifiedBy, order.getTotalPrice(), order);
+                //updateRevenue(modifiedBy, order.getTotalPrice(), order);
+                statistic(order.getTotalPrice(), 1, order);
                 System.out.println("===================1=================");
                 System.out.println(order.getTotalPrice());
             } else if (req.getStatus() != CANCELED_STATUS) {
@@ -308,6 +309,7 @@ public class OrderServiceImpl implements OrderService {
                 productRepository.plusOneProductTotalSold(order.getProduct().getId());
                 System.out.println("===================2=================");
                 System.out.println(order.getTotalPrice());
+                statistic(order.getTotalPrice(), 1, order);
                 updateRevenue(modifiedBy, order.getTotalPrice(), order);
             } else if (req.getStatus() == RETURNED_STATUS) {
                 // TODO: Plus 1 product
@@ -323,7 +325,8 @@ public class OrderServiceImpl implements OrderService {
                 // TODO: Plus 1 product, Minus money
                 productSizeRepository.plusOneProductBySize(order.getProduct().getId(), order.getSize());
                 productRepository.minusOneProductTotalSold(order.getProduct().getId());
-                updateRevenue(modifiedBy, -order.getTotalPrice(), order);
+                //updateRevenue(modifiedBy, -order.getTotalPrice(), order);
+                updateStatistic(order.getTotalPrice(), 1, order);
                 System.out.println("===================3=================");
                 System.out.println(order.getTotalPrice());
             } else if (req.getStatus() != COMPLETE_STATUS) {
@@ -361,6 +364,42 @@ public class OrderServiceImpl implements OrderService {
         finance.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         financeRepository.save(finance);
+    }
+    public void statistic(long amount, int quantity, Order order) {
+        Statistic statistic = statisticRepository.findByCreatedAT();
+        if (statistic != null){
+            statistic.setOrder(order);
+            statistic.setSales(statistic.getSales() + amount);
+            statistic.setQuantity(statistic.getQuantity() + quantity);
+            statistic.setProfit(statistic.getProfit() + order.getProduct().getPrice()*10/100);
+            System.out.println("================== giá trị Sales:===========" + statistic.getSales());
+            System.out.println("================== Giá trị Quantity=========" + statistic.getQuantity());
+            System.out.println("=================== Giá trị Order:==========" + order.getProduct().getPrice());
+            statisticRepository.save(statistic);
+        }else {
+            Statistic statistic1 = new Statistic();
+            statistic1.setOrder(order);
+            statistic1.setSales(amount);
+            statistic1.setQuantity(quantity);
+            statistic1.setProfit(order.getProduct().getPrice() + order.getProduct().getPrice()*10/100 - (quantity * order.getProduct().getPrice()));
+            System.out.println("================== Giá trị amount: ============" + amount);
+            System.out.println("================== Giá trị amount2==============");
+            System.out.println(quantity * order.getProduct().getPrice());
+            statistic1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            statisticRepository.save(statistic1);
+        }
+    }
+
+    public void updateStatistic(long amount, int quantity, Order order) {
+        Statistic statistic = statisticRepository.findByCreatedAT();
+        if (statistic != null) {
+            statistic.setOrder(order);
+            statistic.setSales(statistic.getSales() - amount);
+            statistic.setQuantity(statistic.getQuantity() - quantity);
+            //statistic.setProfit(statistic.getSales() - (statistic.getQuantity() * order.getProduct().getPrice()));
+            statistic.setProfit(statistic.getProfit() - order.getProduct().getPrice()*10/100);
+            statisticRepository.save(statistic);
+        }
     }
 
 }

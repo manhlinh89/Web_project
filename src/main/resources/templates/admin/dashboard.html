@@ -446,10 +446,51 @@
                 animateRotate: true
             }
         };
+    </script>
+    <script>
         getListProductOrderedByCategory();
         getListProductOrderedByBrand();
         getListProductOrder();
-
+        let chart = new Morris.Bar({
+            element: 'chart',
+            barColors: ["#EC407A", "#2196F3", "#8BC34A", "#AB47BC"],
+            parseTime: false,
+            hideHover: 'auto',
+            xkey: 'createdAt',
+            ykeys: ['sales', 'profit', 'quantity'],
+            labels: ['Doanh số', 'Lợi nhuận', 'Số lượng']
+        });
+        function char30day() {
+            $.ajax({
+                url: '/api/admin/statistics',
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (data) {
+                    chart.setData(data);
+                }
+            })
+        }
+        $('#btn-dashboard-filter').click(function () {
+            let toDate = $('#datepicker').val();
+            let fromDate = $('#datepicker2').val();
+            req = {
+                toDate: toDate,
+                fromDate: fromDate
+            }
+            let myJson = JSON.stringify(req)
+            $.ajax({
+                url: '/api/admin/statistics',
+                type: 'POST',
+                data: myJson,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if(data == null){
+                        console.log("ahihi!");
+                    }
+                    chart.setData(data);
+                }
+            })
+        });
 
         //Todo ============= thực hiện load dữ liệu hiện có lên Dashboard ============
         function initiaize() {
