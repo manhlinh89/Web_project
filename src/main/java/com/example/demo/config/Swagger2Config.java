@@ -28,7 +28,7 @@ public class Swagger2Config {
         return new ApiInfoBuilder()
                 .title("Obo Stadium website")
                 .description("Obo Stadium REST API")
-                .contact(new Contact("Trịnh Minh Thúy", "", "minhthuy30197@gmail.com"))
+                .contact(new Contact("Đào Mạnh Linh", "", "manhlinh89.humg@gmail.com"))
                 .version("1.0.0")
                 .build();
     }
