@@ -368,6 +368,7 @@ public class OrderServiceImpl implements OrderService {
     public void statistic(long amount, int quantity, Order order) {
         Statistic statistic = statisticRepository.findByCreatedAT();
         if (statistic != null){
+            System.out.println("======================= đã có bản ghi==================");
             statistic.setOrder(order);
             statistic.setSales(statistic.getSales() + amount);
             statistic.setQuantity(statistic.getQuantity() + quantity);
@@ -378,6 +379,7 @@ public class OrderServiceImpl implements OrderService {
             statisticRepository.save(statistic);
         }else {
             Statistic statistic1 = new Statistic();
+            System.out.println("=======================chưa có bản ghi==================");
             statistic1.setOrder(order);
             statistic1.setSales(amount);
             statistic1.setQuantity(quantity);
