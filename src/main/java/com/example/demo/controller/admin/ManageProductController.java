@@ -81,6 +81,9 @@ public class ManageProductController {
     @PostMapping("/api/admin/products")
     public ResponseEntity<?> createProduct(@Valid @RequestBody CreateProductReq req) {
         String productId = productService.createProduct(req);
+        //-------- Todo add luôn lượt view ban đầu của sản phẩm gán giá trị bằng 0
+
+        //--------------------------------end add ---------------------------------------
         return ResponseEntity.ok(productId);
     }
 

@@ -2,9 +2,11 @@ package com.example.demo.model.dto;
 
 
 import com.example.demo.entity.Brand;
+import com.example.demo.entity.Comment;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +35,7 @@ public class DetailProductInfoDto {
     private String description;
 
     private Brand brand;
+    private List<Comment> comments;
+
+
 }

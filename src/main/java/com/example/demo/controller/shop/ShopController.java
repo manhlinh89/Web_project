@@ -2,10 +2,13 @@ package com.example.demo.controller.shop;
 
 
 import com.example.demo.entity.*;
+import com.example.demo.exception.InternalServerException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.dto.DetailProductInfoDto;
+import com.example.demo.model.dto.DetailViewByProductIdDto;
 import com.example.demo.model.dto.PageableDto;
 import com.example.demo.model.dto.ProductInfoDto;
+import com.example.demo.model.request.CreateCountViewReq;
 import com.example.demo.model.request.CreateOrderReq;
 import com.example.demo.model.request.FilterProductReq;
 import com.example.demo.security.CustomUserDetails;
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.jws.WebParam;
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.demo.config.Constant.*;
 
@@ -43,6 +48,9 @@ public class ShopController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private CountViewService countViewService;
+
     @GetMapping("/")
     public String getIndexPage(Model model) {
         //Get sản phẩm mới nhất
@@ -58,6 +66,21 @@ public class ShopController {
         // Get latest posts
         List<Post> latestPosts = blogService.getLatestPost();
         model.addAttribute("latestPosts", latestPosts);
+
+        //get list coutn view
+        List<Views> listView = countViewService.getListView();
+        //System.out.println("============================== " + listView.get(1).getProduct_id());
+        Map<String, Long> map = new HashMap<String, Long>();
+        for (Views view : listView) {
+            //System.out.println("============================== " + view.getProduct_id() + "---" + view.getCount_view());
+            // Todo Tiến hành lưu view trong 1 Map
+            map.put(view.getProduct_id(), view.getCount_view());
+        }
+        // Todo tiến hành show map
+        for (Map.Entry<String, Long> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + " PPP " + entry.getValue());
+        }
+        model.addAttribute("listCountView", map);
 
         return "shop/index";
     }
@@ -117,25 +140,27 @@ public class ShopController {
 
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/api/tim-kiem")
     public String searchProduct(Model model,
                                 @RequestParam(required = false) String keyword,
-                                @RequestParam(required = false) Integer page){
-        PageableDto result = productService.searchProductByKeyword(keyword,page);
+                                @RequestParam(required = false) Integer page) {
+        PageableDto result = productService.searchProductByKeyword(keyword, page);
 
         model.addAttribute("totalPages", result.getTotalPages());
         model.addAttribute("currentPage", result.getCurrentPage());
         model.addAttribute("listProduct", result.getItems());
         model.addAttribute("keyword", keyword);
-        if (((List<?>)result.getItems()).size() > 0) {
+        if (((List<?>) result.getItems()).size() > 0) {
             model.addAttribute("hasResult", true);
         } else {
             model.addAttribute("hasResult", false);
         }
         return "shop/search";
     }
+
     @GetMapping("/san-pham/{slug}/{id}")
-    public String getDetailProductPage(Model model, @PathVariable String id){
+    public String getDetailProductPage(Model model, @PathVariable String id) {
 
         //Get detail info
         DetailProductInfoDto product;
@@ -163,11 +188,30 @@ public class ShopController {
         model.addAttribute("sizeVn", SIZE_VN);
         model.addAttribute("sizeUs", SIZE_US);
         model.addAttribute("sizeCm", SIZE_CM);
-
+        // ------------------- Todo add the code để test phần count view sản phẩm --------
+        // 1. Get thông tin trong bang View để check xem sản phẩm đang có bao nhiêu view
+        // 2. Nếu không có thì tiến hành insert vào bảng
+        // 3. Nếu đã có thì tiến hành cộng thêm 1 vào view
+        DetailViewByProductIdDto detailViewByProductIdDto;
+        try {
+            detailViewByProductIdDto = countViewService.getViewByProductId(product.getId());
+        } catch (NotFoundException ex) {
+            return "error/404";
+        } catch (Exception ex) {
+            return "error/500";
+        }
+        long getCount = countViewService.getCountView(product.getId());
+        System.out.println("========= gia tri view của sản phẩm là ==============: " + getCount);
+        CreateCountViewReq coutReq = new CreateCountViewReq();
+        coutReq.setProduct_id(product.getId());
+        coutReq.setCount_view(getCount + 1);
+        countViewService.CreateCountView(coutReq);
+        // --------------------------- end add code test count view ----------------------
         return "shop/detail";
     }
+
     @GetMapping("dat-hang")
-    public String getCartPage(Model model, @RequestParam String id, @RequestParam int size){
+    public String getCartPage(Model model, @RequestParam String id, @RequestParam int size) {
         // Get detail info
         DetailProductInfoDto product;
         try {
@@ -179,11 +223,12 @@ public class ShopController {
         }
         model.addAttribute("product", product);
 
-        if(size < 35 || size >42){
+        if (size < 35 || size > 42) {
             return "error/404";
         }
+
         //Get list available size
-        List<Integer>available = productService.getListAvailableSize(id);
+        List<Integer> available = productService.getListAvailableSize(id);
         model.addAttribute("availableSizes", available);
         boolean notFoundSize = true;
         for (Integer availableSize : available) {
@@ -202,6 +247,7 @@ public class ShopController {
 
         return "shop/payment";
     }
+
     @PostMapping("/api/order")
     public ResponseEntity<?> createOrder(@Valid @RequestBody CreateOrderReq orderReq) {
         User user = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();

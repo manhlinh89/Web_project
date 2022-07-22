@@ -29,5 +29,6 @@ public class ProductInfoDto {
         this.price = price;
         this.totalSold = totalSold;
         this.image = image;
+
     }
 }

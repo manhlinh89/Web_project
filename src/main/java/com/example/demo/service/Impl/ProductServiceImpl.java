@@ -89,6 +89,8 @@ public class ProductServiceImpl implements ProductService {
         if(!product.isAvailable()){
             throw new NotFoundException("Sản phẩm không tồn tại");
         }
+        //  ---- to do add thêm phầ này để test lượt xem sản phẩm --------
+        //product.setView(product.getView() + 1);
         DetailProductInfoDto dto = ProductMapper.toDetailProductInfoDto(product);
         //Check promotion
         Promotion promotion = promotionService.checkPublicPromotion();

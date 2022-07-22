@@ -233,6 +233,11 @@ public class Product {
     @Column(name = "onfeet_images", columnDefinition = "json")
     private ArrayList<String> onfeetImages;
 
+    @OneToMany(mappedBy = "product")
+    private List<Comment> comments;
+
+    // ------ add thêm test view ================
+
     @PreRemove
     private void removeCategories() {
         this.categories.clear();

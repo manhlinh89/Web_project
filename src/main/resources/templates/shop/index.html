@@ -9,7 +9,7 @@
                                                )}">
 <head>
     <meta charset="UTF-8">
-    <title>Day la trang chủ</title>
+    <title>Kappa Medium</title>
     <th:block id="css-resources">
         <link rel="stylesheet" type="text/css" th:href="@{/css/index.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/components/products.css}"/>
@@ -17,6 +17,9 @@
         <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/index-newsletter.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/index-category.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/components/index/product-showcase.css}"/>
+
+
+
     </th:block>
 </head>
 <body>
@@ -45,6 +48,9 @@
                                 <p class="price"><span class="text-price" th:text="${product.price}"></span> &#x20AB;</p>
                             </th:block>
                             <p class="card-text sold">&Dstrok;&atilde; b&aacute;n <span th:text="${product.totalSold}"></span> &dstrok;&ocirc;i</p>
+                            <div class="ratings-container">
+                                <p class="">Số lượt xem: <span th:each="view : ${listCountView}" th:if ="${view.getKey()} == ${product.id}" th:text="${view.getValue()}"></span></p>
+                            </div>
                         </div>
                     </div>
                     <div class="shadow mx-auto position-absolute"></div>
@@ -55,7 +61,7 @@
     <!-- Break Banner-->
     <section class="break-banner">
         <a href="/san-pham">
-            <img class="img-fluid" id="promo-banner-1" th:src="@{/image/banner/promo-banner-1-lg.png}" alt="promo-banner-1"/>
+            <img class="img-fluid" id="promo-banner-1" th:src="@{/image/banner/promo-banner-1-lg.jpg}" alt="promo-banner-1"/>
         </a>
     </section>
 
@@ -83,6 +89,9 @@
                                 <p class="price"><span class="text-price" th:text="${product.price}"></span> &#x20AB;</p>
                             </th:block>
                             <p class="card-text sold">&Dstrok;&atilde; b&aacute;n <span th:text="${product.totalSold}"></span> &dstrok;&ocirc;i</p>
+                            <div class="ratings-container">
+                                <p class="">Số lượt xem: <span th:each="view : ${listCountView}" th:if ="${view.getKey()} == ${product.id}" th:text="${view.getValue()}"></span></p>
+                            </div>
                         </div>
                     </div>
                     <div class="shadow mx-auto position-absolute"></div>
@@ -93,7 +102,7 @@
     <!-- Break Banner-->
     <section class="break-banner">
         <a href="/san-pham">
-            <img class="img-fluid" id="promo-banner-2" th:src="@{/image/banner/promo-banner-2-lg.png}" alt="promo-banner-2"/>
+            <img class="img-fluid" id="promo-banner-2" th:src="@{/image/banner/promo-banner-2-lg.jpg}" alt="promo-banner-2"/>
         </a>
     </section>
 
@@ -101,7 +110,7 @@
     <section class="products-showcase staffs-choose container">
         <div class="row">
             <div class="title col-12">
-                <h2 class="h2">OBO LỰA CHỌN</h2><a class="see-more-btn-text text-uppercase" href="/san-pham">Xem Th&ecirc;m</a>
+                <h2 class="h2">KAPPA LỰA CHỌN CÁ TÍNH</h2><a class="see-more-btn-text text-uppercase" href="/san-pham">Xem Th&ecirc;m</a>
             </div>
         </div>
         <div class="row product-row d-flex justify-content-md-between">
@@ -120,6 +129,9 @@
                                 <p class="price"><span class="text-price" th:text="${product.price}"></span> &#x20AB;</p>
                             </th:block>
                             <p class="card-text sold">&Dstrok;&atilde; b&aacute;n <span th:text="${product.totalSold}"></span> &dstrok;&ocirc;i</p>
+                            <div class="ratings-container">
+                                <p class="">Số lượt xem: <span th:each="view : ${listCountView}" th:if ="${view.getKey()} == ${product.id}" th:text="${view.getValue()}"></span></p>
+                            </div>
                         </div>
                     </div>
                     <div class="shadow mx-auto position-absolute"></div>
@@ -130,7 +142,7 @@
     <!-- Break Banner-->
     <section class="break-banner">
         <a href="/san-pham">
-            <img class="img-fluid" id="promo-banner-3" th:src="@{/image/banner/promo-banner-3-lg.png}" alt="promo-banner-3"/>
+            <img class="img-fluid" id="promo-banner-3" th:src="@{/image/banner/promo-banner-3-lg.jpg}" alt="promo-banner-3"/>
         </a>
     </section>
 
@@ -177,7 +189,7 @@
     <!-- Newsletter Section-->
     <section class="newsletter container-fluid d-flex justify-content-center">
         <div class="newsletter-form-wrapper">
-            <div class="title">&Dstrok;&abreve;ng k&yacute; nh&#x1EAD;n b&#x1EA3;n tin OBO Stadium</div>
+            <div class="title">&Dstrok;&abreve;ng k&yacute; nh&#x1EAD;n b&#x1EA3;n tin KAPPA Stadium</div>
             <div class="sub-title">H&atilde;y &dstrok;&abreve;ng k&yacute; &dstrok;&#x1EC3; nh&#x1EAD;n tin m&#x1EDB;i
                 nhanh nh&#x1EA5;t qua email
             </div>

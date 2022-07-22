@@ -22,7 +22,7 @@ public class ProductMapper {
         rs.setProductImages(product.getProductImages());
         rs.setTotalSold(product.getTotalSold());
         rs.setPrice(product.getPrice());
-
+        rs.setComments(product.getComments());
         return rs;
     }
 

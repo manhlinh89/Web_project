@@ -20,7 +20,66 @@
         <link rel="stylesheet" type="text/css" th:href="@{/css/components/product-details/size-guide-table.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/except-home-page.css}"/>
         <link rel="stylesheet" type="text/css" th:href="@{/css/product-details.css}"/>
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.min.css}"/>
+        <style>
+            .comment-container {
+                display: flex;
+                display: -ms-flexbox;
+                padding: 29px 0 8px
+            }
+
+            .comment-container:not(:first-child) {
+                border-top: 1px solid #e7e7e7
+            }
+
+            .comment-container .comment-avatar {
+                flex: 1 0 auto;
+                padding: 0 22px 5px 8px
+            }
+
+            .comment-container img {
+                border-radius: 10rem
+            }
+
+            .comment-container .ratings-container {
+                margin-bottom: 6px
+            }
+
+            .comment-container .product-ratings, .comment-container .ratings {
+                font-size: 14px
+            }
+
+            .comment-container .product-ratings:before {
+                color: #999
+            }
+
+            .comment-container .ratings:before {
+                color: #FD5B5A
+            }
+
+            .comment-container .comment-info {
+                font-family: "Open Sans", sans-serif;
+                font-size: 1.4rem;
+                line-height: 1;
+                letter-spacing: -.02em
+            }
+
+            .comment-container .avatar-name {
+                display: inline;
+                font-family: inherit;
+                font-size: inherit
+            }
+
+            .comment-container .comment-text {
+                letter-spacing: -0.015em
+            }
+            .mb-1 {
+                margin-bottom: 1rem !important
+            }
+
+        </style>
     </th:block>
+
 </head>
 <body>
 <main id="main-content">
@@ -105,7 +164,44 @@
         </div>
     </section>
     <div class="break-section container-fluid"></div>
+    <div>
+        <div class="row">
+            <div class="col-xl-6">
+                <ol class="comment-list">
+                    <th:block th:each="comment : ${product.comments}">
+                        <li class="comment-container">
+                            <div class="comment-avatar">
+                                <img th:src="@{/image/avatar.png}" width="65" height="65" alt="avatar"/>
+                            </div>
+                            <div class="comment-box">
+                                <div class="comment-info mb-1">
+                                    <h4 class="avatar-name" th:text="${comment.user.fullName}"></h4> - <span class="comment-date" th:text="${#dates.format(comment.createdAt, 'dd-MM-yyyy')}">Novemeber 15, 2019</span>
+                                </div>
 
+                                <div class="comment-text">
+                                    <p th:text="${comment.content}"></p>
+                                </div>
+                            </div>
+                        </li>
+                    </th:block>
+                </ol>
+
+
+            </div>
+            <div class="col-xl-6">
+                <div class="add-product-review">
+                    <form action="#" class="comment-form m-0" id="formCommentProduct">
+                        <div class="form-group">
+                            <label>Viết bình luận </label>
+                            <textarea cols="6" rows="6" name="product_comment" class="form-control form-control-sm product_comment"></textarea>
+                        </div><!-- End .form-group -->
+                        <button type="submit" class="btn btn-dark ls-n-15">Gửi bình luận</button>
+                    </form>
+                </div><!-- End .add-product-review -->
+            </div>
+        </div>
+    </div>
+    <div class="break-section container-fluid"></div>
 
 
     <!-- Onfeet Images Section-->
@@ -165,6 +261,7 @@
     <script th:src="@{/script/size-choose.js}"></script>
     <script th:src="@{/script/product-details.js}"></script>
     <script th:src="@{/vendor/zoom-master/jquery.zoom.min.js}" type="text/javascript"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.js"></script>
     <script th:inline="javascript">
         let sizeVn = [[${sizeVn}]];
 
@@ -225,6 +322,60 @@
                 setTimeout(function() {
                     $('#signInSignUp').modal('show');
                 }, 500);
+            }
+        })
+
+        $("#formCommentProduct").submit(function (e) {
+            e.preventDefault();
+        }).validate({
+            rules: {
+                product_comment: {
+                    required: true,
+                    maxlength: 300
+                }
+            },
+            messages: {
+                product_comment: {
+                    required: "Vui lòng nhập nội dung bình luận!",
+                    maxlength: "Nội dung bình luận có độ dài tối đa 300 ký tự!",
+                }
+            },
+
+            submitHandler : function (){
+                let content = $(".product_comment").val();
+                let productId = [[${product.id}]];
+                console.log("Nội dung là: " +content + productId);
+                req = {
+                    content: content,
+                    productId: productId
+                }
+                let myJson  = JSON.stringify(req);
+                $.ajax({
+                    url: "/api/comments/product",
+                    type: 'POST',
+                    data: myJson,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $(".comment-list").append(`
+                                <li class="comment-container">
+                                            <div class="comment-avatar">
+                                                <img src="/image/avatar.png" width="65" height="65" alt="avatar"/>
+                                            </div>
+                                            <div class="comment-box">
+                                                <div class="comment-text">
+                                                    <p>${data.content}</p>
+                                                </div>
+                                            </div>
+                                        </li>`)
+                        $(".product_comment").val('');
+                    },
+                    error: function (error) {
+                        toastr.warning("Vui lòng đăng nhập để bình luận");
+                        setTimeout(function () {
+                            $('#exampleModal').modal('show');
+                        }, 500);
+                    }
+                });
             }
         })
     </script>
